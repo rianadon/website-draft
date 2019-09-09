@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <style>
+      * { box-sizing: border-box; }
+      html, body, section { height: 100%; }
+      body { margin: 0; }
+      section { padding: 32px; }
+      svg {
+          width: 100%;
+          height: 100%;
+      }
+      /* .letters { opacity: 0.05; } */
+      .tree {
+	      transform: translate(30%, 100%) translate(-100px, -459px);
+      }
+      #animation {
+          transform: translateX(50%) translate(-191px, -100px);
+      }
+      .letters {
+	      transform: translateY(50%) translateY(-150px);
+      }
+      .blob, .bigblob {
+	      transform: translateY(100%) translateY(-459px);
+      }
+    </style>
+  </head>
+  <body>
+	<svg><g id="animation"></g></svg>
+    <section>
+      Potato!
+    </section>
+    <script src="svg.js"></script>
+    <script>
+      const layers = something
+      const FRAMES = layers.length
+      const fps = 8
+      const delay = 1000 / fps
+
+      let lastFrame = -1
+      function step(timestamp) {
+          frame = Math.floor(timestamp / delay) // % FRAMES
+          if (frame >= FRAMES) return
+
+          window.requestAnimationFrame(step)
+          if (frame == lastFrame) return
+          lastFrame = frame
+          document.querySelector('#animation').innerHTML = layers[frame].join('')
+      }
+      window.requestAnimationFrame(step)
+      // showPaths()
+
+      function showPaths() {
+          const colors = {
+              'sign': '#0f0',
+              'birds': '#f00',
+              'blob': '#00f',
+          }
+
+          for (const frame of layers) {
+              for (let layer of frame) {
+                  const cls = layer.match(/class="(.*?)"/)
+                  const firstclass = cls[1].split(' ')[0]
+                  const style = layer.match(/style="(.*?)"/)
+
+                  const move = layer.match(/M (\S+) (\S+)/)
+                  if (!move) continue
+
+                  if (colors[firstclass]) {
+                      document.querySelector('#animation').innerHTML += layer.replace('#000000', 'rgba(100, 100, 100,0.5)')
+                      document.querySelector('#animation').innerHTML += `<circle cx="${move[1]}" cy="${move[2]}" fill="${colors[firstclass]}" class="${cls[1]}" style="${style && style[1]}" r="5" />`
+                  }
+              }
+          }
+      }
+    </script>
+  </body>
+</html>
